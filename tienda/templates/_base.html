@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+    <!-- bootstrap css cdn -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Barry's Candy's</title>
+    <style>
+      body {
+        background-color:salmon;
+      }
+    </style>
+</head>
+<body>
+  <header class="p-2 border-bottom">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center">
+        <a class="navbar-brand" href="{% url 'tienda:pagina_inicio' %}"><b>BARRY'S CANDY'S </b></a>
+        <!-- icono del carrito &#xe8cc; -->
+        {% if request.user.is_authenticated %}
+        <b class="text-primary">{{ cart_count }}</b>
+        {% endif %}
+        <a href="{% url 'carro:mostrar_carro' %}" class="text-primary mt-2 me-2"><i class="material-icons h3">🛒 </i></a>
+        <!-- icono para favoritos &#xe87d; -->
+        {% if request.user.is_authenticated %}
+        <b class="text-primary">{{ request.user.get_likes_count}}</b>
+        {% endif %}
+        <a href="{% url 'tienda:favoritos' %}" class="text-primary mt-2 me-2"><i class="material-icons h3">♡ </i></a>
+        <!-- Menu -->
+        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+          <li><a href="{% url 'tienda:pagina_inicio' %}" class="nav-link px-2 text-white">Tienda</a></li>
+          <!-- categories dropdown -->
+          <div class="dropdown text-end">
+            <a href="#" class=" mt-2 me-1 ms-1 text-white d-block link-with text-decoration-none dropdown-toggle"id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">Categorias</a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownUser1" >
+              {% if categorias %}
+                {% for categoria in categorias %}
+                <!-- check if category is parent -->
+                  {% if not categoria.is_sub %}
+                    <!-- parent -->
+                    <li><a href="{% url 'tienda:filtro_por_categoria' categoria.slug %}" class="dropdown-item text-capitalize bg-light border"><b>{{ categoria }}</b></a></li>
+                    {% for child in categoria.sub_categorias.all %}
+                    <!-- child -->
+                    <li><a href="{% url 'tienda:filtro_por_categoria' child.slug %}" class="dropdown-item">{{ child }}</a></li>
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                <li><a class="dropdown-item text-black"><b>Sin categorias...</b></a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </ul>
+        <!-- Buscar -->
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{% url 'tienda:buscar' %}">
+          <input name="q" type="search" class="form-control form-control-dark" placeholder="Buscar" aria-label="Search">
+        </form>
+        {% if request.user.is_authenticated %}
+        <div class="dropdown text-end">
+          <a href="#" class="btn btn-primary text-white me-4 d-block link-dark text-decoration-none dropdown-toggle"id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">👤Perfil</a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownUser1">
+            <li><a href="{% url 'carro:mostrar_carro' %}" <a class="dropdown-item">Carrito</a></li>
+            <li><a href="{% url 'tienda:favoritos' %}" <a class="dropdown-item">Favoritos</a></li>
+            <li><a href="{% url 'orden:orden_usuario' %}" <a class="dropdown-item">Mis compras</a></li>
+            <li><a class="dropdown-item" href="{% url 'cuentas:edit_profile' %}">Editar perfil</a></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'cuentas:user_logout' %}">Cerrar sesion</a></li>
+          </ul>
+        </div>
+        {% else %}
+        <!-- login, sign-up btn -->
+        <div class="text-end">
+          <a href="{% url 'cuentas:user_login' %}" class="btn btn-outline-primary me-2">Iniciar Sesion</a>
+          <a href="{% url 'cuentas:user_register' %}" class="btn btn-primary">Registrarse</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+    <main class="container">
+        <div class="row mt-3">
+          <!-- messages -->
+          {% if mensajes %}
+            {% for mensaje in mensajes %}
+              <div class="alert alert-{{ message.tags }}">{{ mensaje }}</div>
+            {% endfor %}
+          {% endif %}
+          <!-- content -->
+          {% block contenido %}{% endblock contenido %}
+        </div>
+      </main>
+    <!-- Bootstrap JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

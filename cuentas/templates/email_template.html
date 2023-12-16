@@ -1,0 +1,10 @@
+{% load i18n %}{% autoescape off %}
+{% blocktranslate %}Usted ha recibido este correo porque ha solicitado el restablecimiento de su contraseña en Barry's Candy's.{% endblocktranslate %}
+
+{% translate "El siguiente link te redigira a la pantalla para crear tu nueva contraseña: " %}
+{% block reset_link %}
+{{ protocol }}://{{ domain }}{% url 'cuentas:password_reset_confirm' uidb64=uid token=token %}
+{% endblock %}
+{% translate "Si usted no solicito el cambio de su contraseña, haga caso omiso" %}
+
+{% endautoescape %}

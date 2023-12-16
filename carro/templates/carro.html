@@ -1,0 +1,48 @@
+{% extends "_base.html" %}
+{% load static %}
+{% block contenido %}
+<div class="col-md-2"></div>
+{% if cart_count != 0 %}
+<h2 class="text-center">Resumen de compra</h2>
+  <hr>
+<div class="col-md-2"></div>
+<div class="col-md-8 border rounded p-3">
+<table class="table table-striped ">
+    <thead class="text-white">
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Producto</th>
+        <th scope="col">Precio</th>
+        <th scope="col">cantidad</th>
+        <th scope="col">Precio total</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    {% for item in carro %}
+    <tbody>
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td><a class="text-decoration-none" href="{{ item.producto.get_absolute_url }}">{{ item.producto.titulo }}</a></td>
+        <td>${{ item.precio }}</td>
+        <center><td>{{ item.quantity }}</td></center>
+        <td>${{ item.valor_total }}</td>
+        <td><a class="text-danger text-decoration-none" href="{% url 'carro:eliminar_del_carro' item.producto.id %}">Eliminar del carrito</a></td>
+      </tr>
+    </tbody>
+    {% endfor %}
+</table>
+<hr>
+<a href="/" class="btn btn-danger">Seguir comprando</a>
+<a href="{% url 'orden:crear_orden' %}" style="float: right;" class="btn btn-success mt-1">Comprar</a>
+<h4 class="mt-4" class="text-black"><span style="color: white;">Precio total:</span> ${{ cart.get_precio_total }}</h4>
+</div>
+{% else %}
+<div class="col-md-8 mt-5 pt-5 text-center">
+  <br>
+  <h3 class="text-capitalize text-white fw-bold">Tu carrito esta vacio!</h3>
+  <a href="/" class="text-primary text-decoration-none fw-bold">Volver a la tienda</a>
+</div>
+{% endif %}
+<div class="col-md-2"></div>
+
+{% endblock contenido %}

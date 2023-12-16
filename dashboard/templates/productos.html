@@ -1,0 +1,32 @@
+{% extends "dashboard.html" %}
+
+{% block contenido %}
+
+<table class="table table-striped ">
+    <thead class="text-white">
+        <tr>
+            <th scope="col">No.</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Fecha</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    {% for producto in productos %}
+    <tbody>
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td><a class="text-decoration-none" href="{{ producto.get_absolute_url }}">{{ producto.titulo }}</a></td>
+        <td>${{ producto.precio }}</td>
+        <td>{{ producto.categoria }}</td>
+        <td>{{ producto.fecha_creacion|date:"M d" }}</td>
+        <td><a class="text-danger text-decoration-none" href="{% url 'dashboard:borrar_producto' producto.id %}">Eliminar</a></td>
+        <td><a class="text-info text-decoration-none" href="{% url 'dashboard:editar_producto' producto.id %}">Editar</a></td>
+      </tr>
+    </tbody>
+    {% endfor %}
+</table>
+
+{% endblock contenido %}

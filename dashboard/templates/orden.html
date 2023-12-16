@@ -1,0 +1,33 @@
+{% extends "dashboard.html" %}
+{% block contenido %}
+<table class="table">
+    <thead class="text-white">
+      <tr>
+        <th scope="col">No.</th>
+        <th scope="col">Usuario</th>
+        <th scope="col">Id</th>
+        <th scope="col">Precio total</th>
+        <th scope="col">Status</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    {% for orden in orders %}
+    <tbody>
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ orden.user.nombre_completo }}</td>
+        <td>{{ orden.id }}</td>
+        <td>${{ orden.get_total_price }}</td>
+        {% if orden.status %}
+            <td class="text-success">Entregado</td>
+        {% else %}
+            <td class="text-danger">Cancelado</td>
+        {% endif %}
+        <td><a href="{% url 'dashboard:orden_detalle' orden.id %}" class="text-primary text-decoration-none">Detalles</a></td>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+  
+
+{% endblock  contenido %}
